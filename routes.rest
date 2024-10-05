@@ -43,8 +43,28 @@ GET https://books-eeav.onrender.com/books/ HTTP/1.1
 GET https://books-eeav.onrender.com/books/67017b3074983a380e2a2238' HTTP/1.1
 
 ####Create books
+POST https://books-eeav.onrender.com/books HTTP/1.1
+content-type: application/json
 
-POST url HTTP/1.1
-header name: header value
+{
+  "title": "Amyr",
+  "author": "Ana",
+  "year": "1456",
+  "genre": "romance",
+  "isbn": "8965786"
+}
 
-content
+### Update books
+PUT books-eeav.onrender.com/books/6701b6104e0316fb0917d205'
+
+content-type: application/json
+{
+  "title": "Amyr",
+  "author": "Ana",
+  "year": "1456",
+  "genre": "romance",
+  "isbn": "8965786"
+}
+
+### Delete books
+DELETE books-eeav.onrender.com/books/6701b6104e0316fb0917d205 HTTP/1.1
