@@ -9,6 +9,7 @@ GET http://localhost:3000/books/67017b3074983a380e2a2238 HTTP/1.1
 ####Create books
 POST http://localhost:3000/books HTTP/1.1
 
+content-type: application/json
     {
         "title":"To Kill a Mockingbird",
         "author":"Harper Lee",
@@ -19,7 +20,8 @@ POST http://localhost:3000/books HTTP/1.1
 
 ####Update books
 PUT  http://localhost:3000/books HTTP/1.1
-    
+
+content-type: application/json
     {
         "title":"any",
         "author":"any",
@@ -33,3 +35,16 @@ DELETE http://localhost:3000/books HTTP/1.1
 
 
 ### Production
+
+###Get all books
+GET https://books-eeav.onrender.com/books/ HTTP/1.1
+
+###Get books by id
+GET https://books-eeav.onrender.com/books/67017b3074983a380e2a2238' HTTP/1.1
+
+####Create books
+
+POST url HTTP/1.1
+header name: header value
+
+content

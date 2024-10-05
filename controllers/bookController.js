@@ -10,8 +10,8 @@ const getBooks = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.status(200).json(books);
   } catch (err) {
-    console.error('Erro ao buscar livros:', err);
-    res.status(500).json({ message: 'Erro ao buscar livros', error: err.message });
+    console.error('Error when searching for books:', err);
+    res.status(500).json({ message: 'Error when searching for books', error: err.message });
   }
 };
 
@@ -19,7 +19,7 @@ const getBooks = async (req, res) => {
 
 const getOneBook = async (req, res) => {
   if (!ObjectId.isValid(req.params.id)) {
-    return res.status(400).json('ID de livro inválido');
+    return res.status(400).json('Invalid book ID');
   }
 
   const bookId = new ObjectId(req.params.id);
@@ -31,15 +31,16 @@ const getOneBook = async (req, res) => {
     if (book) {
       res.status(200).json(book);
     } else {
-      res.status(404).json({ message: 'Livro não encontrado' });
+      res.status(404).json({ message: 'Book not found' });
     }
   } catch (err) {
-    console.error('Erro ao buscar livro:', err);
-    res.status(500).json({ message: 'Erro ao buscar livro', error: err.message });
+    console.error('Error when searching for book:', err);
+    res.status(500).json({ message: 'Error when searching for book', error: err.message });
   }
 };
 
 const createBook = async (req, res) => {
+  console.log('Creating book:', req.body);
   const book = {
     title: req.body.title,
     author: req.body.author,
@@ -52,13 +53,13 @@ const createBook = async (req, res) => {
     const result = await db.collection('books').insertOne(book);
     
     if (result.acknowledged) {
-      res.status(201).json({ id: result.insertedId, message: 'Livro criado com sucesso' });
+      res.status(201).json({ id: result.insertedId, message: 'Book created successfully' });
     } else {
-      res.status(500).json({ message: 'Falha ao criar o livro' });
+      res.status(500).json({ message: 'Failed to create book' });
     }
   } catch (err) {
-    console.error('Erro ao criar livro:', err);
-    res.status(500).json({ message: 'Erro ao criar livro', error: err.message });
+    console.error('Error creating book:', err);
+    res.status(500).json({ message: 'Error creating book', error: err.message });
   }
 };
 
