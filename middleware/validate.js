@@ -1,6 +1,6 @@
 const validator = require('../helpers/validate');
 
-const saveBook = (req, res, next) => {
+const validateBook = (req, res, next) => {
   const validationRule = {
     title: 'required|string',
     author: 'required|string',
@@ -34,6 +34,6 @@ const validateMongoId = (req, res, next) => {
 };
 
 module.exports = {
-  saveBook,
+  validateBook,
   validateMongoId
 };
