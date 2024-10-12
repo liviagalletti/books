@@ -6,7 +6,6 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
 const passport = require('passport');
 const session = require('express-session');
-const RedisStore = require('connect-redis').default;
 const { createClient } = require('redis');
 const GitHubStrategy = require('passport-github2').Strategy;
 const cors = require('cors');
@@ -14,19 +13,14 @@ const cors = require('cors');
 const port = process.env.PORT || 3000;
 const app = express();
 
-// Configuração Redis
-const redisClient = createClient();
-redisClient.connect().catch(console.error);
 
 app
   .use(bodyParser.json())
   .use(
     session({
-      store: new RedisStore({ client: redisClient }),
       secret: 'secret',
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: process.env.NODE_ENV === 'production' },
     })
   )
   .use(passport.initialize())
