@@ -1,4 +1,4 @@
-### Localhost
+### Localhost/Books
 
 ###Get all books
 GET http://localhost:3000/books
@@ -68,3 +68,90 @@ content-type: application/json
 
 ### Delete books
 DELETE books-eeav.onrender.com/books/6701b6104e0316fb0917d205 HTTP/1.1
+
+### Localhost/readers
+
+### Get all readers
+GET http://localhost:3000/readers HTTP/1.1
+
+### Get one reader
+GET http://localhost:3000/readers/67098f1045fa0e9d7a680410 HTTP/1.1
+
+### Create reader
+POST http://localhost:3000/readers HTTP/1.1
+content-type: application/json
+    {
+        "readerId": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "favoriteGenres": [
+        "Fiction",
+        "Romance"
+        ],
+        "membershipDate": "2024-10-01",
+        "telephone": "+1234567890"
+    }
+
+### Update reader
+PUT http://localhost:3000/readers/67098f1045fa0e9d7a680410 HTTP/1.1
+content-type: application/json
+    {
+        "readerId": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "favoriteGenres": [
+        "Fiction",
+        "Romance"
+        ],
+        "membershipDate": "2024-10-01",
+        "telephone": "+1234567890"
+    }
+
+### Delete reader
+DELETE http://localhost:3000/readers/67098f1045fa0e9d7a680410 HTTP/1.1
+
+
+### Production/readers
+
+### Get all readers
+GET http://books-eeav.onrender.com/readers HTTP/1.1
+
+### Get one reader
+GET http://books-eeav.onrender.com/readers/67098f1045fa0e9d7a680410 HTTP/1.1
+
+### Create reader
+POST http://books-eeav.onrender.com/readers HTTP/1.1
+content-type: application/json
+    {
+        "readerId": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "favoriteGenres": [
+        "Fiction",
+        "Romance"
+        ],
+        "membershipDate": "2024-10-01",
+        "telephone": "+1234567890"
+    }
+
+### Update reader
+PUT http://books-eeav.onrender.com/readers/67098f1045fa0e9d7a680410 HTTP/1.1
+content-type: application/json
+    {
+        "readerId": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": 30,
+        "favoriteGenres": [
+        "Fiction",
+        "Romance"
+        ],
+        "membershipDate": "2024-10-01",
+        "telephone": "+1234567890"
+    }
+
+### Delete reader
+DELETE http://books-eeav.onrender.com/readers/67098f1045fa0e9d7a680410 HTTP/1.1
