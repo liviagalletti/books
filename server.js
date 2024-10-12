@@ -3,67 +3,77 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongodb = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
-const swaggerFile = require('./swagger-output.json');;
+const swaggerFile = require('./swagger-output.json');
 const passport = require('passport');
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
 const GitHubStrategy = require('passport-github2').Strategy;
 const cors = require('cors');
-
 
 const port = process.env.PORT || 3000;
 const app = express();
 
+// Configuração Redis
+const redisClient = createClient();
+redisClient.connect().catch(console.error);
+
 app
   .use(bodyParser.json())
-  .use(session({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  }))
+  .use(
+    session({
+      store: new RedisStore({ client: redisClient }),
+      secret: 'secret',
+      resave: false,
+      saveUninitialized: false,
+      cookie: { secure: process.env.NODE_ENV === 'production' },
+    })
+  )
   .use(passport.initialize())
   .use(passport.session())
-  .use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    next();
-  })
-  .use(cors({methods:['GET','POST','DELETE','UPDATE','PUT','PATCH']}))
-  .use(cors({ origin: '*'}))
+  .use(cors({ origin: '*', methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH'] }))
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
   .use('/', require('./routes'));
 
-
 process.on('uncaughtException', (err, origin) => {
-  console.error(`Caught exception: ${err}\n` + `Exception origin: ${origin}`);
+  console.error(`Caught exception: ${err}\nException origin: ${origin}`);
 });
 
-passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID,
-  clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: process.env.CALLBACK_URL
-},
-function(accessToken, refreshToken, profile, done){
-  
-  return done(null,profile);
-}
-))
+passport.use(
+  new GitHubStrategy(
+    {
+      clientID: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      callbackURL: process.env.CALLBACK_URL,
+    },
+    (accessToken, refreshToken, profile, done) => {
+      return done(null, profile);
+    }
+  )
+);
 
-passport.serializeUser((user,done) => {
-  done(null,user);
+passport.serializeUser((user, done) => {
+  done(null, user);
 });
 
-passport.deserializeUser((user,done) => {
-  done(null,user);
+passport.deserializeUser((user, done) => {
+  done(null, user);
 });
 
-app.get('/',(req,res) => {res.send(req.session.user !== undefined ? `Logged in as ${req.session.user.displayName}` : "Logged Out")});
+app.get('/', (req, res) => {
+  res.send(req.session.user ? `Logged in as ${req.session.user.displayName}` : 'Logged Out');
+});
 
-app.get('/github/callback', passport.authenticate('github',{
-  failureRedirect: '/api-docs', session: false}),
+app.get(
+  '/github/callback',
+  passport.authenticate('github', { failureRedirect: '/api-docs', session: false }),
   (req, res) => {
     req.session.user = req.user;
-    res.redirect('/');
-});
+    req.session.save(() => {
+      res.redirect('/');
+    });
+  }
+);
 
 const startServer = async () => {
   try {
