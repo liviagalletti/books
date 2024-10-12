@@ -4,15 +4,14 @@ const bodyParser = require('body-parser');
 const mongodb = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
-const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo'); 
 const GitHubStrategy = require('passport-github2').Strategy;
 const cors = require('cors');
 
 const port = process.env.PORT || 3000;
 const app = express();
-
 
 app
   .use(bodyParser.json())
@@ -22,7 +21,7 @@ app
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), 
-      cookie: { secure: process.env.NODE_ENV === 'production' },
+      cookie: { secure: false },
     })
   )
   .use(passport.initialize())
@@ -31,10 +30,7 @@ app
   .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
   .use('/', require('./routes'));
 
-process.on('uncaughtException', (err, origin) => {
-  console.error(`Caught exception: ${err}\nException origin: ${origin}`);
-});
-
+// Estrutura do Passport
 passport.use(
   new GitHubStrategy(
     {
@@ -60,8 +56,7 @@ app.get('/', (req, res) => {
   res.send(req.session.user ? `Logged in as ${req.session.user.displayName}` : 'Logged Out');
 });
 
-app.get(
-  '/github/callback',
+app.get('/github/callback', 
   passport.authenticate('github', { failureRedirect: '/api-docs', session: false }),
   (req, res) => {
     req.session.user = req.user;
