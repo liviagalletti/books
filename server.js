@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const mongodb = require('./db/connect');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger-output.json');
+const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const session = require('express-session');
-const { createClient } = require('redis');
 const GitHubStrategy = require('passport-github2').Strategy;
 const cors = require('cors');
 
@@ -21,6 +21,8 @@ app
       secret: 'secret',
       resave: false,
       saveUninitialized: false,
+      store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }), 
+      cookie: { secure: process.env.NODE_ENV === 'production' },
     })
   )
   .use(passport.initialize())
