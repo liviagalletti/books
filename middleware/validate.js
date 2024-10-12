@@ -25,7 +25,35 @@ const validateBook = (req, res, next) => {
   next();
 };
 
+const validateReaders = (req,res,next) => {
+  console.log('Validating readers:', req.body);
+  const validationRule = {
+    readerId:'integer',
+    name:'string',
+    email:'string',
+    age:'integer',
+    favoriteGenres:'string',
+    membershipDate:'string',
+    telephone:'string'
+}
+
+const validation = new Validator(req.body, validationRule);
+
+if (validation.fails()) {
+  console.log('Validation failed:', validation.errors.all());
+  return res.status(412).json({
+    success: false,
+    message: 'Validation failed',
+    errors: validation.errors.all()
+  });
+}
+
+console.log('Validation passed');
+next();
+};
+
 
 module.exports = {
   validateBook,
+  validateReaders
 };
