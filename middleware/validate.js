@@ -32,7 +32,7 @@ const validateReaders = (req,res,next) => {
     name:'string',
     email:'string',
     age:'integer',
-    favoriteGenres:'string',
+    favoriteGenres:'array',
     membershipDate:'string',
     telephone:'string'
 }

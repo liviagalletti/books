@@ -26,7 +26,7 @@ const getOneReader = async(req,res) =>{
         const reader = await db.collection('readers').findOne({_id:readerId})
 
         if (reader) {
-            res.status(200).json(book);
+            res.status(200).json(reader);
           } else {
             res.status(404).json({ message: 'Reader not found' });
           }
@@ -38,20 +38,20 @@ const getOneReader = async(req,res) =>{
 }
 
 const createReader = async (req, res) =>{
-    console.log('Creating reader:', req, body)
+    console.log('Creating reader:', req.body)
 
     const reader = {
         readerId: req.body.readerId,
         name: req.body.name,
         email: req.body.email,
-        age: req.body.email,
+        age: req.body.age,
         favoriteGenres: req.body.favoriteGenres,
         membershipDate: req.body.membershipDate,
         telephone: req.body.telephone
     }
     try {
         const db = mongodb.getDb();
-        const result = await db.collection('readers').insertOne(book);
+        const result = await db.collection('readers').insertOne(reader);
         
         if (result.acknowledged) {
           res.status(201).json({ id: result.insertedId, message: 'Reader created successfully' });
@@ -75,7 +75,7 @@ const updateReader = async (req, res) => {
         readerId: req.body.readerId,
         name: req.body.name,
         email: req.body.email,
-        age: req.body.email,
+        age: req.body.age,
         favoriteGenres: req.body.favoriteGenres,
         membershipDate: req.body.membershipDate,
         telephone: req.body.telephone
@@ -101,7 +101,7 @@ const updateReader = async (req, res) => {
 
   const deleteReader = async (req, res) => {
     if (!ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: 'Must use a valid book id to delete a reader.' });
+      return res.status(400).json({ message: 'Must use a valid id to delete a reader.' });
     }
   
     const readerId = new ObjectId(req.params.id);
